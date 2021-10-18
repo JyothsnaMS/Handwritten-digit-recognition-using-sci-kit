@@ -1,0 +1,51 @@
+# code to implement Hand written digit Recognition using Sci-kit learn.
+from sklearn import svm
+from sklearn import datasets #importing libraries
+import matplotlib.pyplot as plt
+%matplotlib inline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix
+import seaborn as sns
+
+svc = svm.SVC(gamma=0.001, C=100)
+digits = datasets.load_digits()
+digits.images[0]
+
+plt.imshow(digits.images[0], cmap=plt.cm.gray_r, interpolation = 'nearest')
+digits.target[5]
+digits.target.size
+digits.target.shape
+svc.fit(digits.data[1:1790], digits.target[1:1790])
+svc.predict(digits.data[1791:1796])
+digits.target[1791:1796]
+
+X = digits.images
+Y = digits.target
+
+train_x, test_x, train_y, test_y = train_test_split(X, Y, test_size=0.25, random_state=0)
+train_x   #------METHOD 1
+train_x.shape
+train_x_flattened = train_x.reshape(len(train_x), 8*8)
+train_x_flattened.shape
+
+train_y
+train_y.shape
+
+svc.fit(train_x_flattened, train_y)
+
+test_x_flattened = test_x.reshape(len(test_x), 8*8)  #------METHOD 2
+test_x_flattened
+svc.predict(test_x_flattened)
+digits.target[test_y]
+
+prediction = svc.predict(test_x_flattened)
+
+confusion_matrix = confusion_matrix(test_y, prediction)
+confusion_matrix
+accuracy_score = accuracy_score(test_y, prediction)
+accuracy_score
+
+plt.figure(figsize = (10,7))
+sns.heatmap(confusion_matrix, annot=True, fmt='d')
+plt.xlabel('Predicted')
+plt.ylabel('Truth')
